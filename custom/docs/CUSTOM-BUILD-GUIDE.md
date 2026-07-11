@@ -8,13 +8,22 @@
 - **自定义分支**: `custom-v1.17.18`
 - **可执行文件名**: `opencode-dev`
 - **官方版本**: `opencode` (通过 npm/brew 安装)
+- **数据库模式**: 共享数据库（两个版本使用相同数据库）
+- **自动更新**: 已禁用（必须手动同步更新两个版本）
 
 ## 已安装位置
 
 - **自定义版本**: `~/.local/bin/opencode-dev`
 - **官方版本**: `~/.opencode/bin/opencode`
 
-两个版本可以共存，不会互相冲突，并且共享会话数据。
+**重要**：两个版本共享同一个数据库，不会互相冲突，可以无缝切换。
+
+### 共享数据
+
+- **数据库**: `~/.local/share/opencode/opencode.db` (两个版本共享)
+- **配置**: `~/.config/opencode/opencode.jsonc` (共享)
+- **状态**: `~/.local/state/opencode/` (共享)
+- **缓存**: `~/.cache/opencode/` (共享)
 
 ---
 
@@ -102,6 +111,56 @@ chmod +x ~/.local/bin/opencode-dev
 opencode-dev --version
 # 测试你的修改
 ```
+
+---
+
+## 共享数据库说明
+
+### 为什么共享数据库？
+
+两个版本（`opencode` 和 `opencode-dev`）共享同一个数据库，目的是：
+- ✅ 无缝切换：在任一版本中创建的会话，在另一版本中立即可见
+- ✅ 应急备份：当一个版本出现恶性 BUG 时，可以立即切换到另一个版本继续工作
+- ✅ 数据一致：不需要在两个版本之间同步或导入导出会话
+
+### 如何实现的？
+
+自定义版本在构建时强制设置了 `OPENCODE_DISABLE_CHANNEL_DB=1`，这样：
+- 官方版本使用：`~/.local/share/opencode/opencode.db`
+- 自定义版本也使用：`~/.local/share/opencode/opencode.db` (不再使用独立数据库)
+
+### 风险控制
+
+为了避免版本不兼容问题，已采取以下措施：
+
+1. **禁用自动更新**
+   - 配置文件：`~/.config/opencode/opencode.jsonc` 中设置 `"autoupdate": false`
+   - 环境变量：`~/.bashrc` 中设置 `export OPENCODE_DISABLE_AUTOUPDATE=1`
+
+2. **版本同步要求**
+   - ⚠️ **关键**：升级时必须同时更新两个版本到相同基础版本
+   - ⚠️ 不要单独升级某一个版本
+
+3. **定期备份**
+   - 升级前必须备份数据库
+   - 使用 `./custom/scripts/backup-database.sh`（待创建）
+
+4. **健康监控**
+   - 定期运行 `./custom/scripts/check-database-health.sh`
+   - 检查数据库大小、WAL 文件、备份状态
+
+### 测试共享功能
+
+运行测试脚本验证：
+```bash
+./custom/scripts/test-shared-database.sh
+```
+
+或手动测试：
+1. 在官方版本中创建一个会话
+2. 切换到自定义版本，应该能看到同一会话
+3. 在自定义版本中编辑会话
+4. 切换回官方版本，应该能看到更新
 
 ---
 
