@@ -12,39 +12,41 @@
 
 ## 补丁列表
 
-### 示例补丁格式（完成第一个修改后删除此示例）
+#### 1. 支持自定义可执行文件名
 
-#### 1. [补丁名称]
-
-- **修改文件**: `packages/xxx/src/xxx.ts`
-- **修改位置**: 第 XX 行 / `functionName()` 函数
+- **修改文件**: `packages/opencode/script/build.ts`
+- **修改位置**: 第 26 行（新增变量）、第 184 行、第 204 行（使用变量）
 - **修改原因**: 
-  - 详细说明为什么需要这个修改
-  - 遇到的问题是什么
-  - 这个修改如何解决问题
+  - 需要同时使用自编译版本和官方 npm 安装的 opencode
+  - 两个版本不应该互相冲突，但可以共享会话数据
+  - 当一个版本出现问题时，可以使用另一个版本来解决问题
 - **修改内容**:
   ```typescript
-  // 修改前
-  const oldCode = ...
+  // 新增环境变量支持
+  const customBinaryName = process.env.OPENCODE_BINARY_NAME || "opencode"
   
-  // 修改后
-  const newCode = ...
+  // 修改输出文件名
+  outfile: `dist/${name}/bin/${customBinaryName}`,
+  
+  // 修改测试路径
+  const binaryPath = `dist/${name}/bin/${customBinaryName}`
   ```
-- **Commit**: `custom: [简短描述] - 原因：[原因]`
-- **测试验证**: 如何验证这个修改有效
-- **升级注意**: 升级到新版本时需要注意的事项
-
----
-
-## 实际补丁记录（从这里开始记录你的修改）
-
-<!-- 
-使用说明：
-1. 每次修改源码后，在此文档中添加一条记录
-2. 按照上面的模板格式填写
-3. Commit message 格式：custom: <修改说明> - 原因：<为什么要修改>
-4. 版本升级时，参考此文档重新应用所有补丁
--->
+- **使用方式**:
+  ```bash
+  # 构建自定义名称的可执行文件
+  OPENCODE_BINARY_NAME=opencode-dev bun run script/build.ts --single
+  
+  # 安装到用户 PATH
+  cp packages/opencode/dist/opencode-linux-x64/bin/opencode-dev ~/.local/bin/
+  ```
+- **Commit**: `45091dd4f` - `custom: 支持通过环境变量自定义可执行文件名 - 原因：避免与官方npm安装的opencode冲突，便于同时使用两个版本`
+- **测试验证**: 
+  - 构建完成后运行 `opencode-dev --version` 验证版本号
+  - 同时运行 `opencode --version` 和 `opencode-dev --version` 验证两者共存
+- **升级注意**: 
+  - 这是构建系统的修改，不涉及运行时逻辑
+  - 新版本升级时需要重新应用此补丁
+  - 如果构建脚本结构变化较大，可能需要手动调整
 
 ---
 
