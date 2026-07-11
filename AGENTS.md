@@ -1,3 +1,23 @@
+# Custom Development Environment
+
+> ⚠️ **Important**: This is a custom fork with modifications. See [CUSTOM.md](CUSTOM.md) for quick navigation.
+
+## Custom Project Rules
+
+- **Custom Content Location**: All custom modifications, documentation, scripts, and tools are in the `custom/` directory
+- **Custom Branch**: Working on `custom-v1.x.x` branches based on official release tags
+- **Custom Binary**: Build produces `opencode-dev` instead of `opencode` to avoid conflicts with official installations
+- **Custom Commits**: Use `custom: <description> - 原因：<reason>` format for custom modifications
+- **Documentation**: Record all source code modifications in `custom/docs/PATCHES.md`
+- **Build Script**: Use `./custom/scripts/rebuild-custom.sh` to rebuild the custom version
+- **Push Hook**: Use `git push --no-verify` to skip pre-push type checking when pushing custom branches
+
+For detailed usage and upgrade instructions, see [custom/docs/CUSTOM-BUILD-GUIDE.md](custom/docs/CUSTOM-BUILD-GUIDE.md).
+
+---
+
+# OpenCode Development Guide (Official)
+
 - To regenerate the legacy JavaScript SDK, run `./packages/sdk/js/script/build.ts`.
 - After changing the public Protocol or Server `HttpApi`, run `bun run generate` from `packages/client`. Do not edit `src/generated` or `src/generated-effect` directly.
 - Keep runtime dependencies directed from Schema to Core and Protocol, then from Core and Protocol to Server. Client runtime code may depend on Schema and Protocol but never Core or Server; `sdk-next` composes Client, Core, and Server.
