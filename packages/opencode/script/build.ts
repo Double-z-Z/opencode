@@ -196,6 +196,8 @@ for (const item of targets) {
       OPENCODE_CHANNEL: `'${Script.channel}'`,
       OPENCODE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "",
       ...(item.os === "linux" ? { "process.env.OPENTUI_LIBC": JSON.stringify(item.abi ?? "glibc") } : {}),
+      // 自定义：强制使用共享数据库，避免渠道隔离
+      "process.env.OPENCODE_DISABLE_CHANNEL_DB": JSON.stringify("1"),
     },
   })
 
