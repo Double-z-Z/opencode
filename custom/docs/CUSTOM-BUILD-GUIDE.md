@@ -59,7 +59,7 @@ opencode --version
 
 ### 2. 记录修改
 
-每次修改后，在 `PATCHES.md` 中添加详细记录：
+每次修改后，在 `custom/docs/custom/docs/PATCHES.md` 中添加详细记录：
 
 ```markdown
 #### N. [修改名称]
@@ -139,8 +139,8 @@ git checkout -b custom-v1.18.0 v1.18.0
 # 查看所有自定义提交
 git log custom-v1.17.18 --oneline --grep="custom:"
 
-# 查看 PATCHES.md
-git show custom-v1.17.18:PATCHES.md
+# 查看 custom/docs/PATCHES.md
+git show custom-v1.17.18:custom/docs/PATCHES.md
 ```
 
 ### 5. 应用补丁
@@ -160,19 +160,19 @@ git cherry-pick --continue
 
 #### 方式 B: 手动重新实现
 
-参考 `PATCHES.md` 中的记录，手动重新实现每个修改。
+参考 `custom/docs/PATCHES.md` 中的记录，手动重新实现每个修改。
 
-### 6. 更新 PATCHES.md
+### 6. 更新 custom/docs/PATCHES.md
 
 ```bash
 # 更新当前版本信息
-# 修改 PATCHES.md 中的：
+# 修改 custom/docs/PATCHES.md 中的：
 # - 基础版本: v1.18.0
 # - 自定义分支: custom-v1.18.0
 # - 构建日期: <当前日期>
 
-git add PATCHES.md
-git commit -m "docs: update PATCHES.md for v1.18.0"
+git add custom/docs/PATCHES.md
+git commit -m "docs: update custom/docs/PATCHES.md for v1.18.0"
 ```
 
 ### 7. 构建新版本
@@ -300,7 +300,7 @@ OPENCODE_BINARY_NAME=opencode-dev bun run script/build.ts --single --skip-embed-
 
 ## 重要提醒
 
-1. **每次修改源码后**，必须更新 `PATCHES.md`
+1. **每次修改源码后**，必须更新 `custom/docs/PATCHES.md`
 2. **Commit message 格式**：`custom: <说明> - 原因：<原因>`
 3. **定期推送**到远程仓库备份（当网络稳定时）
 4. **版本升级前**，先查看官方 Release Notes
@@ -310,7 +310,7 @@ OPENCODE_BINARY_NAME=opencode-dev bun run script/build.ts --single --skip-embed-
 
 ## 相关文件
 
-- `PATCHES.md` - 修改记录文档
+- `custom/docs/PATCHES.md` - 修改记录文档
 - `packages/opencode/script/build.ts` - 构建脚本（已修改）
 - `~/.local/bin/opencode-dev` - 自定义版本可执行文件
 - `~/.opencode/bin/opencode` - 官方版本可执行文件

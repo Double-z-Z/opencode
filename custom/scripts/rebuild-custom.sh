@@ -6,9 +6,16 @@ set -e
 echo "=== OpenCode 自定义版本构建脚本 ==="
 echo ""
 
+# 获取脚本所在目录的父目录（即项目根目录）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# 切换到项目根目录
+cd "$PROJECT_ROOT"
+
 # 检查是否在正确的目录
-if [ ! -f "CUSTOM-BUILD-GUIDE.md" ]; then
-    echo "错误：请在 opencode 仓库根目录运行此脚本"
+if [ ! -d "custom" ]; then
+    echo "错误：找不到 custom 目录，请确认在 opencode 仓库根目录"
     exit 1
 fi
 
